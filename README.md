@@ -29,6 +29,7 @@ MedScan revolutionizes healthcare management by combining **artificial intellige
 
 **🔍 Intelligent Report Analysis**
 - Upload medical reports (PDF, images)
+-Xray
 - AI-powered text extraction using Google Gemini
 - Instant insights and summaries
 - Vector-based semantic search
