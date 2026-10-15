@@ -8,8 +8,77 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Mic, Brain, Database, Languages, Shield, Zap } from "lucide-react";
-import RadialOrbitalTimelineDemo from "@/components/RadialOrbitalTimelineDemo";
+import RadialOrbitalTimeline from "@/components/ui/radial-orbital-timeline";
 import { ThemeToggle } from "@/components/theme-toggle";
+
+const timelineData = [
+  {
+    id: 1,
+    title: "AI Analysis",
+    date: "01",
+    content: "Get clear summaries and insights from your medical reports.",
+    category: "Analysis",
+    icon: Brain,
+    relatedIds: [2, 3, 4],
+    status: "completed" as const,
+    energy: 95,
+  },
+  {
+    id: 2,
+    title: "Medical Search",
+    date: "02",
+    content: "Search your health information with context-aware AI.",
+    category: "Search",
+    icon: Database,
+    relatedIds: [1, 5],
+    status: "completed" as const,
+    energy: 85,
+  },
+  {
+    id: 3,
+    title: "Voice Assistant",
+    date: "03",
+    content: "Ask health-related questions using a natural voice interface.",
+    category: "Voice",
+    icon: Mic,
+    relatedIds: [1, 4],
+    status: "in-progress" as const,
+    energy: 75,
+  },
+  {
+    id: 4,
+    title: "Languages",
+    date: "04",
+    content: "Interact with the assistant in supported Indian languages.",
+    category: "Accessibility",
+    icon: Languages,
+    relatedIds: [1, 3],
+    status: "completed" as const,
+    energy: 80,
+  },
+  {
+    id: 5,
+    title: "Health Dashboard",
+    date: "05",
+    content: "Review health metrics and trends from your records.",
+    category: "Dashboard",
+    icon: Shield,
+    relatedIds: [2, 6],
+    status: "in-progress" as const,
+    energy: 65,
+  },
+  {
+    id: 6,
+    title: "Care Management",
+    date: "06",
+    content: "Keep track of appointments and ongoing care.",
+    category: "Care",
+    icon: Zap,
+    relatedIds: [5],
+    status: "pending" as const,
+    energy: 55,
+  },
+];
 
 export default function Home() {
   return (
@@ -86,7 +155,7 @@ export default function Home() {
 
           {/* Radial Orbital Timeline */}
           <div className="mt-1">
-            <RadialOrbitalTimelineDemo.RadialOrbitalTimelineDemo />
+            <RadialOrbitalTimeline timelineData={timelineData} />
           </div>
 
           {/* Feature Cards Grid */}

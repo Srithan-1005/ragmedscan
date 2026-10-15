@@ -8,10 +8,6 @@ import { indexName, namespace } from '@/app/config';
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash-8b' });
 
-const pinecone = new Pinecone({
-  apiKey: process.env.PINECONE_API_KEY ?? "",
-});
-
 export async function POST(request: NextRequest) {
   try {
     const { message, language = 'en-IN', reportData = '', reportId } = await request.json();
@@ -50,6 +46,7 @@ export async function POST(request: NextRequest) {
 
     // Query vector database for relevant clinical findings
     const query = `Represent this for searching relevant passages: patient medical report that says: \n${trimmedReport}. \n\n${trimmedMessage}`;
+    const pinecone = new Pinecone({ apiKey: process.env.PINECONE_API_KEY ?? "" });
     const retrievals = await queryPineconeVectorStore(pinecone, indexName, namespace, query, {
       reportId,
       topK: 3,

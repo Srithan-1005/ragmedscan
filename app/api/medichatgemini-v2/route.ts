@@ -8,10 +8,6 @@ import { indexName, namespace } from "@/app/config";
 export const maxDuration = 60;
 // export const runtime = 'edge';
 
-const pinecone = new Pinecone({
-    apiKey: process.env.PINECONE_API_KEY ?? "",
-});
-
 const google = createGoogleGenerativeAI({
     baseURL: 'https://generativelanguage.googleapis.com/v1beta',
     apiKey: process.env.GEMINI_API_KEY,
@@ -36,6 +32,7 @@ export async function POST(req: Request, res: Response) {
         const reportData: string = reqBody.data.reportData;
         const query = `Represent this for searching relevant passages: patient medical report says: \n${reportData}. \n\n${userQuestion}`;
 
+        const pinecone = new Pinecone({ apiKey: process.env.PINECONE_API_KEY ?? "" });
         const retrievals = await queryPineconeVectorStore(pinecone, indexName, namespace, query);
 
         const finalPrompt = `Here is a summary of a patient's clinical report, and a user query. Some generic clinical findings are also provided that may or may not be relevant for the report.

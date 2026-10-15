@@ -8,9 +8,9 @@ const model = genAI.getGenerativeModel({
     model: 'gemini-1.5-flash-8b',
 });
 
-const pinecone = new Pinecone({
-    apiKey: process.env.PINECONE_API_KEY ?? "",
-});
+const pinecone = process.env.PINECONE_API_KEY
+    ? new Pinecone({ apiKey: process.env.PINECONE_API_KEY })
+    : null;
 
 const prompt = `Attached is an image of a clinical report. 
 Go over the the clinical report and identify biomarkers that show slight or large abnormalities. Then summarize in 100 words. You may increase the word limit if the report has multiple pages. Do not output patient name, date etc. Make sure to include numerical values and key details from the report, including report title.
@@ -71,16 +71,20 @@ export async function POST(req: Request) {
         
         // Create and store vector embeddings
         console.log("Creating vector embeddings...");
-        const vectorSuccess = await createAndStoreVectorEmbeddings(
-            pinecone,
-            'med-rag', // index name
-            'diagnosis2', // namespace
-            textResponse || '',
-            reportId
-        );
+        const vectorSuccess = pinecone
+            ? await createAndStoreVectorEmbeddings(
+                pinecone,
+                'med-rag', // index name
+                'diagnosis2', // namespace
+                textResponse || '',
+                reportId
+            )
+            : false;
         
         if (vectorSuccess) {
             console.log("Successfully created and stored vector embeddings");
+        } else if (!pinecone) {
+            console.warn("PINECONE_API_KEY is not configured; report text was extracted without vector storage.");
         } else {
             console.warn("Failed to create vector embeddings, but text extraction succeeded");
         }

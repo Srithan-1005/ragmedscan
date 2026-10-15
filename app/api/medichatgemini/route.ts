@@ -7,10 +7,6 @@ import { indexName, namespace } from "@/app/config";
 export const maxDuration = 60;
 // export const runtime = 'edge';
 
-const pinecone = new Pinecone({
-    apiKey: process.env.PINECONE_API_KEY ?? "",
-});
-
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY ?? "");
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-8b" });
 
@@ -42,7 +38,12 @@ export async function POST(req: Request, res: Response) {
             : `Represent this for searching relevant passages: user question: ${userQuestion}`;
 
         const retrievals = reportData
-            ? await queryPineconeVectorStore(pinecone, indexName, namespace, query)
+            ? await queryPineconeVectorStore(
+                new Pinecone({ apiKey: process.env.PINECONE_API_KEY ?? "" }),
+                indexName,
+                namespace,
+                query
+            )
             : "<nomatches>";
 
         // Check if the query is a casual conversation (not a medical question)
@@ -110,4 +111,3 @@ export async function POST(req: Request, res: Response) {
         });
     }
 }
-

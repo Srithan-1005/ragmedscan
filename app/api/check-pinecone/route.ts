@@ -1,11 +1,15 @@
 import { Pinecone } from "@pinecone-database/pinecone";
 
-const pinecone = new Pinecone({
-    apiKey: process.env.PINECONE_API_KEY ?? "",
-});
-
 export async function GET() {
     try {
+        if (!process.env.PINECONE_API_KEY) {
+            return new Response(JSON.stringify({ error: "PINECONE_API_KEY is not configured." }), {
+                status: 503,
+                headers: { 'Content-Type': 'application/json' }
+            });
+        }
+
+        const pinecone = new Pinecone({ apiKey: process.env.PINECONE_API_KEY });
         const index = pinecone.Index('med-rag');
         
         // Get index stats
